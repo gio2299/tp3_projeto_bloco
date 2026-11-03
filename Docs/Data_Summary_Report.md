@@ -17,7 +17,7 @@ Relacionar todas as fontes de dados utilizadas no projeto EquidadeJá Brasil, in
   - `SG.GEN.PARL.ZS` — Proporção de assentos ocupados por mulheres em parlamentos nacionais (%), usado como proxy de representatividade em posições de decisão.
 - **Objetivo de uso:** Base quantitativa principal do dashboard — evolução histórica da diferença de participação de gênero no mercado de trabalho e da representatividade em posições de decisão no Brasil.
 - **Observações:** dados podem ter defasagem de 1–2 anos; tratados com cache local (`Sample Data/`) como fallback.
-- **[TP3] Situação atual:** o painel multipágina lê a amostra local `Sample Data/amostra_indicadores_genero.csv`, que cobre os anos de 2015 a 2022 para os indicadores de participação feminina e masculina na força de trabalho. Esses dados também são servidos pela rota `GET /indicadores` da API do projeto.
+- **[TP3] Situação atual:** o painel multipágina lê a amostra local `Sample Data/amostra_indicadores_genero.csv`, que cobre os anos de 2015 a 2022 e contém 3 indicadores: taxa de participação na força de trabalho de mulheres e de homens, e proporção de assentos ocupados por mulheres no parlamento. Esses dados também são servidos pela rota `GET /indicadores` da API do projeto.
 
 ### 2.2 Google News RSS Feed (dados qualitativos — Web Scraping estático)
 - **URL base:** `https://news.google.com/rss/search?q={termo}&hl=pt-BR&gl=BR&ceid=BR:pt-419`
@@ -35,7 +35,7 @@ Relacionar todas as fontes de dados utilizadas no projeto EquidadeJá Brasil, in
 - **Script:** `scraping_selenium.py`.
 - **Arquivo gerado:** `Data/Processed/noticias_completas.csv`.
 - **Objetivo de uso:** obter o conteúdo integral das matérias para análises mais profundas com LLMs na próxima etapa (resumo, classificação de sentimento, perguntas e respostas).
-- **Resultado da coleta:** texto extraído de 15 das 15 notícias (100%).
+- **Resultado da coleta:** texto extraído de 14 das 15 notícias (93%). Uma notícia falhou nas duas tentativas, mesmo com reinício automático do Chrome (erro de conexão com o navegador); para ela, o corpus de LLM usa apenas o título.
 - **Limitações:** alguns sites podem bloquear robôs, exigir assinatura (paywall) ou alterar o HTML; o script extrai apenas parágrafos com mais de 60 caracteres e, por isso, pode omitir trechos curtos. O resultado depende do estado dos sites no momento da execução.
 
 ### 2.4 API da Anthropic (Claude) — geração de insights via LLM
@@ -76,9 +76,9 @@ Os dados acima são servidos por uma API REST (`api.py`), executada com `uvicorn
 
 | Fonte | Tipo de Dado | Formato | Método de Coleta | Uso no Projeto | Status |
 |---|---|---|---|---|---|
-| World Bank API | Numérico, série temporal | JSON via API REST | API | Indicadores quantitativos do dashboard e da API | ✅ Integrado (amostra local 2015–2022) |
+| World Bank API | Numérico, série temporal | JSON via API REST | API | Indicadores quantitativos do dashboard e da API | ✅ Integrado (amostra local, 3 indicadores, 2015–2022) |
 | Google News RSS | Texto (manchetes) | XML (RSS) | Web Scraping estático | Contexto qualitativo + insumo para o LLM | ✅ Integrado (15 manchetes) |
-| **[TP3]** Páginas das matérias | Texto completo | HTML dinâmico | Web Scraping com Selenium | Insumo para resumo, sentimento e Q&A | ✅ Integrado (15/15 com texto) |
+| **[TP3]** Páginas das matérias | Texto completo | HTML dinâmico | Web Scraping com Selenium | Insumo para resumo, sentimento e Q&A | ✅ Integrado (14/15 com texto) |
 | Anthropic API (Claude) | Texto gerado | JSON via API REST | Geração via LLM / prompt engineering | Insight executivo combinando dados + notícias | 🔲 Dados preparados; integração na próxima etapa |
 
 ## 6. Qualidade e limitações dos dados **[TP3]**

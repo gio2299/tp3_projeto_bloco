@@ -32,7 +32,7 @@ Com as novas ferramentas incorporadas nesta etapa (FastAPI, Selenium e Streamlit
 | Cobertura de dados históricos | Série de pelo menos 15 anos para os indicadores de participação no mercado de trabalho | Parcial: a amostra local atual cobre 2015–2022 (8 anos) |
 | Atualização dos dados | Coleta automatizada via API (sem necessidade de atualização manual) | Em andamento |
 | Volume de contexto qualitativo | Ao menos 10 manchetes recentes coletadas por execução do scraper | Atingido (15 manchetes) |
-| **[TP3]** Texto completo das notícias | Extrair o texto de ao menos 60% das notícias via Selenium | Atingido (15 de 15 notícias, 100%) |
+| **[TP3]** Texto completo das notícias | Extrair o texto de ao menos 60% das notícias via Selenium | Atingido (14 de 15 notícias, 93%) |
 | **[TP3]** API de dados | Ao menos 2 rotas (GET e POST) documentadas e funcionais | Atingido (5 rotas: 4 GET e 1 POST) |
 | **[TP3]** Navegação | Aplicação com menu e ao menos 5 páginas | Atingido (página inicial + 6 páginas) |
 | Qualidade dos insights gerados | Resumos do LLM revisados e validados manualmente quanto à fidelidade aos dados (sem "alucinações") | Próxima etapa |

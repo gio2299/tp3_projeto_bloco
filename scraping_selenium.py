@@ -4,7 +4,7 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
-from selenium.common.exceptions import TimeoutException, WebDriverException
+from selenium.common.exceptions import TimeoutException
 from dados import ARQ_NOTICIAS, ARQ_COMPLETAS
 
 
@@ -12,7 +12,11 @@ def criar_driver():
     opts = Options()
     opts.add_argument("--headless=new")      # sem abrir janela
     opts.add_argument("--window-size=1280,900")
-    return webdriver.Chrome(options=opts)
+    opts.add_argument("--disable-gpu")
+    opts.add_argument("--disable-dev-shm-usage")
+    driver = webdriver.Chrome(options=opts)
+    driver.set_page_load_timeout(40)
+    return driver
 
 
 def extrair_artigo(driver, url, espera=15):
@@ -29,6 +33,13 @@ def extrair_artigo(driver, url, espera=15):
     return driver.current_url, texto
 
 
+def fechar(driver):
+    try:
+        driver.quit()
+    except Exception:
+        pass
+
+
 def main():
     df = pd.read_csv(ARQ_NOTICIAS)
     driver = criar_driver()
@@ -36,16 +47,20 @@ def main():
     try:
         for i, link in enumerate(df["link"], 1):
             print(f"[{i}/{len(df)}] {link[:70]}...")
-            try:
-                url_final, texto = extrair_artigo(driver, link)
-            except WebDriverException as e:
-                print("  erro:", type(e).__name__)
-                url_final, texto = link, ""
+            url_final, texto = link, ""
+            for tentativa in (1, 2):
+                try:
+                    url_final, texto = extrair_artigo(driver, link)
+                    break
+                except Exception as e:
+                    print(f"  erro ({type(e).__name__}), tentativa {tentativa}/2. Reiniciando o Chrome...")
+                    fechar(driver)
+                    driver = criar_driver()
             urls_finais.append(url_final)
             textos.append(texto)
             time.sleep(1)
     finally:
-        driver.quit()
+        fechar(driver)
 
     df["url_final"] = urls_finais
     df["texto"] = textos
