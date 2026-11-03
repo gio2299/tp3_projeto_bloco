@@ -1,0 +1,12 @@
+streamlit
+pandas
+requests
+beautifulsoup4
+feedparser
+plotly
+wordcloud
+matplotlib
+fastapi
+uvicorn
+selenium
+python-dotenv
